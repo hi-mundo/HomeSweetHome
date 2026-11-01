@@ -38,6 +38,15 @@ sudo systemctl enable --now homesweethome
 
 Open `http://<pi-ip>:424` (find the IP with `hostname -I`).
 
+**Firewall.** If `ufw` is active (`sudo ufw status`), open the port for your home network only.
+Replace `192.168.15.0/24` with your network (the first three numbers of the Pi's IP, then `.0/24`):
+
+```bash
+sudo ufw allow from 192.168.15.0/24 to any port 424 proto tcp comment "Home Sweet Home"
+```
+
+`sudo ufw allow 424` also works, but accepts connections from any address that can reach the Pi.
+
 **Port.** Ports below 1024 normally need root. The unit grants only
 `CAP_NET_BIND_SERVICE`, so the app still runs as your user. To use another port, edit
 `Environment=PORT=` in `/etc/systemd/system/homesweethome.service`, then
@@ -128,5 +137,6 @@ For HTTPS on a public domain, use `certbot --nginx`; on a home network, a local 
 |---|---|
 | `status=226/NAMESPACE` | `data/` does not exist: `mkdir -p ~/HomeSweetHome/data` and restart. |
 | `PermissionError` binding the port | Port below 1024 without the capability lines; keep them or use a port ≥ 1024. |
+| Works on the Pi (`curl 127.0.0.1:424`) but not from other devices | Firewall: see the `ufw` step above. |
 | `Address already in use` | Something else uses the port: `sudo ss -ltnp \| grep :424`. |
 | Page opens but nothing saves | `data/` not writable by the service user: `chown -R $USER data`. |
