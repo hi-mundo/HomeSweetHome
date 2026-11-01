@@ -3,3 +3,6 @@ __pycache__/
 data/
 .DS_Store
 .env
+
+# Structured Vibe Code: local state, allowances and slices stay out of the repo
+.vibecoding/
