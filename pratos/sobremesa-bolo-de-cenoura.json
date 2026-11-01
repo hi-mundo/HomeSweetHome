@@ -1,0 +1,1 @@
+{"nome": "Bolo de cenoura com chocolate", "tipo": "sobremesa", "preparo": "cozinhar", "rende": 10, "dura": 5, "emoji": "🍰", "ingredientes": ["Cenoura", {"item": "Ovos", "qtd": "3"}, "Farinha de trigo", "Açúcar", "Óleo", {"item": "Chocolate em pó", "categoria": "Despensa"}], "kcal": 350, "tempo_ativo": 20, "tempo_total": 60, "equipamento": "forno"}

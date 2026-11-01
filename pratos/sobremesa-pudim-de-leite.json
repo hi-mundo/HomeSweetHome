@@ -1,0 +1,1 @@
+{"nome": "Pudim de leite", "tipo": "sobremesa", "preparo": "cozinhar", "rende": 8, "dura": 5, "emoji": "🍮", "ingredientes": [{"item": "Leite condensado", "categoria": "Despensa"}, "Leite", {"item": "Ovos", "qtd": "3"}, "Açúcar"], "kcal": 300, "tempo_ativo": 20, "tempo_total": 240, "equipamento": "forno"}

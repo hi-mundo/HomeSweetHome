@@ -1,0 +1,1 @@
+{"nome": "Arroz doce", "tipo": "sobremesa", "preparo": "cozinhar", "rende": 8, "dura": 4, "emoji": "🍚", "ingredientes": [{"item": "Arroz", "qtd": "1 xícara", "categoria": "Despensa"}, "Leite", {"item": "Leite condensado", "categoria": "Despensa"}, "Canela"], "kcal": 280, "tempo_ativo": 10, "tempo_total": 40, "equipamento": "fogão"}

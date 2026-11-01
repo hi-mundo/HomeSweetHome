@@ -1,0 +1,1 @@
+{"nome": "Banana com canela e mel", "tipo": "sobremesa", "preparo": "montar", "rende": 4, "emoji": "🍌", "ingredientes": ["Banana", {"item": "Canela", "categoria": "Temperos"}, "Mel"], "dura": 0, "kcal": 150, "tempo_ativo": 5, "tempo_total": 5, "equipamento": "nenhum"}

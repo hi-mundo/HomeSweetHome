@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lar Doce Lar</title>
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111312" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lar Doce Lar">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ícones (traço único, 24×24) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7V19a1.5 1.5 0 0 1-1.5 1.5h-4v-6H9v6H5A1.5 1.5 0 0 1 3.5 19z"/></symbol>
+      <symbol id="i-fridge" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M5 10h14M9 5.5v2M9 13v3"/></symbol>
+      <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5 5 1.9-5 1.9-1.9 5-1.9-5-5-1.9 5-1.9zM18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2.2l2.3 10.6a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.6 8H6.1"/><circle cx="9.5" cy="19.8" r="1.2"/><circle cx="17" cy="19.8" r="1.2"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+      <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6 7l1 12.5a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5L18 7M10 11v6M14 11v6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.2 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0zM12 9.5v4M12 17h.01"/></symbol>
+      <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2.5v19M3.8 7.2l16.4 9.6M20.2 7.2 3.8 16.8M9.5 4.5 12 7l2.5-2.5M9.5 19.5 12 17l2.5 2.5"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c.6 3 4.5 5.2 4.5 9.6a4.5 4.5 0 0 1-9 0c0-2.2 1.2-3.6 2.3-4.6.1 1.8.9 3 2 3.3C11.3 8.8 11 6 12 3z"/></symbol>
+      <symbol id="i-pot" viewBox="0 0 24 24"><path d="M3 10h18M5 10v6.5A3.5 3.5 0 0 0 8.5 20h7a3.5 3.5 0 0 0 3.5-3.5V10M9 6.5c0-1 1-1.2 1-2.2M14 6.5c0-1 1-1.2 1-2.2"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 6.5h10M10 12h10M10 17.5h10M4 6.5l1.2 1.2L7.5 5.3M4 12l1.2 1.2 2.3-2.4M4 17.5l1.2 1.2 2.3-2.4"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M8 7.5l4-4 4 4M5 12.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6.5"/></symbol>
+      <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M19.5 11A7.5 7.5 0 1 0 17.3 16.3M19.5 4.5V11H13"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.6A8 8 0 1 1 9.4 4a6.5 6.5 0 0 0 10.6 10.6z"/></symbol>
+      <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7.5c-1.8-1.3-6.5-1.6-6.5 4 0 4.3 2.7 9 5 9 .7 0 1-.4 1.5-.4s.8.4 1.5.4c2.3 0 5-4.7 5-9 0-5.6-4.7-5.3-6.5-4zM12 7.5c0-2 1-3.5 2.5-4"/></symbol>
+      <symbol id="i-cake" viewBox="0 0 24 24"><path d="M4 20.5h16M5.5 20.5V13a1.5 1.5 0 0 1 1.5-1.5h10a1.5 1.5 0 0 1 1.5 1.5v7.5M5.5 15.5c1.6 0 1.6 1.3 3.2 1.3s1.6-1.3 3.3-1.3 1.6 1.3 3.3 1.3 1.6-1.3 3.2-1.3M12 11.5v-3M12 6.5a1.2 1.2 0 0 0 1.2-1.2c0-.9-1.2-2.3-1.2-2.3s-1.2 1.4-1.2 2.3A1.2 1.2 0 0 0 12 6.5z"/></symbol>
+      <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M6.5 3v7.5M4.5 3v5a2 2 0 0 0 4 0V3M6.5 10.5V21M17.5 15H14V8c0-3 1.5-5 3.5-5v18"/></symbol>
+      <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 3.5 3.5 3 3 0 0 0 3 3 3 3 0 0 0 2.5 2.5z"/><path d="M8.5 9.5h.01M8 14.5h.01M12.5 12.5h.01M14.5 16.5h.01"/></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13.5 15-14-.5 10-6 15-14 15M5 19l7-7"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="title-block">
+        <p id="hello" class="eyebrow"></p>
+        <h1 id="page-title">Lar Doce Lar</h1>
+      </div>
+      <div class="top-right">
+        <span id="sync" class="sync" aria-live="polite"></span>
+        <button class="pill-btn" id="btn-edit-stock" type="button" aria-label="Remover itens" hidden>
+          <svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg><span class="pill-label">Remover itens</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- INÍCIO: alerta da semana, hoje, cardápio -->
+      <section id="view-dishes" class="view" aria-labelledby="tab-dishes">
+        <div class="home-grid">
+          <div class="home-main">
+            <div id="week-alert"></div>
+            <div id="week-card"></div>
+          </div>
+          <div class="home-side">
+            <div class="search">
+              <svg class="ic search-ic" aria-hidden="true"><use href="#i-search"/></svg>
+              <input id="dish-search" type="search" placeholder="Buscar prato"
+                     autocomplete="off" enterkeyhint="search" aria-label="Buscar prato">
+              <button id="dish-search-clear" class="icon-btn" type="button" aria-label="Limpar busca" hidden>
+                <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+            </div>
+            <div id="dish-list"><div class="skeleton"></div><div class="skeleton"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COZINHA e CASA (mesma tela, escopos diferentes) -->
+      <section id="view-stock" class="view" hidden>
+        <div id="stock-alert"></div>
+        <div class="toolbar">
+          <div class="search">
+            <svg class="ic search-ic" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="stock-search" type="search" placeholder="Buscar ou adicionar"
+                   autocomplete="off" autocapitalize="sentences" enterkeyhint="go" aria-label="Buscar ou adicionar item">
+            <button id="stock-search-clear" class="icon-btn" type="button" aria-label="Limpar busca" hidden>
+              <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+          </div>
+          <div id="edit-banner" class="banner" hidden>
+            <span>Só dá para excluir itens que vocês adicionaram.</span>
+            <button id="btn-edit-done" class="btn primary small" type="button">Pronto</button>
+          </div>
+        </div>
+        <div id="stock-list"></div>
+      </section>
+
+      <!-- COMPRAS -->
+      <section id="view-list" class="view" aria-labelledby="tab-list" hidden>
+        <div class="toolbar">
+          <div class="search">
+            <svg class="ic search-ic" aria-hidden="true"><use href="#i-plus"/></svg>
+            <input id="list-add" type="search" placeholder="Adicionar à lista"
+                   autocomplete="off" autocapitalize="sentences" enterkeyhint="done" aria-label="Adicionar item à lista">
+            <button id="list-add-clear" class="icon-btn" type="button" aria-label="Limpar" hidden>
+              <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+          </div>
+          <div id="list-suggest" class="suggest" hidden></div>
+        </div>
+        <div id="shop-list"></div>
+        <div id="list-actions" class="action-bar" hidden>
+          <button id="btn-share" class="btn secondary" type="button">
+            <svg class="ic" aria-hidden="true"><use href="#i-share"/></svg>Enviar lista</button>
+          <button id="btn-finish" class="btn primary" type="button" disabled>Comprei</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Barra "ver lista" (como a sacola de apps de delivery) -->
+  <button id="cart-bar" class="cart-bar" type="button" hidden>
+    <svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg>
+    <span>Lista de compras</span>
+    <b id="cart-bar-count"></b>
+    <svg class="ic cart-go" aria-hidden="true"><use href="#i-right"/></svg>
+  </button>
+
+  <nav class="tabbar" role="tablist" aria-label="Seções">
+    <button id="tab-dishes" role="tab" aria-selected="true" data-view="dishes">
+      <svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span>Início</span>
+    </button>
+    <button id="tab-stock" role="tab" aria-selected="false" data-view="stock">
+      <svg class="ic" aria-hidden="true"><use href="#i-fridge"/></svg><span>Cozinha</span>
+    </button>
+    <button id="tab-home" role="tab" aria-selected="false" data-view="home">
+      <svg class="ic" aria-hidden="true"><use href="#i-sparkle"/></svg><span>Casa</span>
+    </button>
+    <button id="tab-list" role="tab" aria-selected="false" data-view="list">
+      <svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg><span>Compras</span><b id="list-badge" class="badge" hidden></b>
+    </button>
+  </nav>
+
+  <!-- Tela do plano da semana -->
+  <section id="plan" class="screen" role="dialog" aria-modal="true" aria-labelledby="plan-title" hidden>
+    <div class="screen-inner">
+      <header class="screen-head">
+        <button id="plan-back" class="round-btn" type="button" aria-label="Voltar">
+          <svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <h2 id="plan-title">Cozinhar pra semana</h2>
+      </header>
+      <div id="plan-tabs" class="segmented" role="tablist">
+        <button role="tab" data-tab="week" aria-selected="true">
+          <svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Semana</button>
+        <button role="tab" data-tab="cook" aria-selected="false">
+          <svg class="ic" aria-hidden="true"><use href="#i-pot"/></svg>Cozinhar</button>
+        <button role="tab" data-tab="check" aria-selected="false">
+          <svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Conferir<b id="plan-tab-alert" class="dot-alert" hidden></b></button>
+      </div>
+      <div id="plan-config" class="plan-config">
+        <div class="card stepper" data-param="days">
+          <span>Dias<small>Almoço, sobremesa, lanche e janta</small></span>
+          <button type="button" data-step="-1" aria-label="Menos dias"><svg class="ic" aria-hidden="true"><use href="#i-minus"/></svg></button>
+          <b></b>
+          <button type="button" data-step="1" aria-label="Mais dias"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+        </div>
+        <div class="card stepper" data-param="desserts">
+          <span>Tipos de sobremesa<small>Até 2 — um mousse dura a semana</small></span>
+          <button type="button" data-step="-1" aria-label="Menos sobremesas"><svg class="ic" aria-hidden="true"><use href="#i-minus"/></svg></button>
+          <b></b>
+          <button type="button" data-step="1" aria-label="Mais sobremesas"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+        </div>
+      </div>
+      <div id="plan-body" class="plan-body"></div>
+      <div id="plan-actions" class="action-bar"></div>
+    </div>
+  </section>
+
+  <!-- Folha de adicionar/editar (no iPad vira diálogo central) -->
+  <div id="sheet-backdrop" class="backdrop" hidden></div>
+  <form id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="sheet-title">Novo item</h2>
+      <button type="button" id="f-cancel" class="round-btn" aria-label="Fechar">
+        <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+
+    <label class="field">
+      <span>Nome genérico</span>
+      <input id="f-name" required maxlength="60" autocapitalize="sentences" placeholder="ex: Feijão, Leite, Detergente">
+      <small class="hint" id="f-name-hint">Use o nome do item, não a marca. Ex.: “Leite”, não “Leite Itambé”.</small>
+    </label>
+
+    <fieldset class="field">
+      <legend>Categoria</legend>
+      <div id="f-cats" class="chips wrap"></div>
+    </fieldset>
+
+    <fieldset class="field" id="f-level-wrap">
+      <legend>Como está em casa?</legend>
+      <div class="seg big" id="f-level">
+        <button type="button" data-level="ok">Tem</button>
+        <button type="button" data-level="low">Pouco</button>
+        <button type="button" data-level="out">Acabou</button>
+      </div>
+    </fieldset>
+
+    <label class="field" id="f-note-wrap">
+      <span>Observação para a compra <em>(opcional)</em></span>
+      <input id="f-note" maxlength="80" placeholder="ex: 2 kg, o maduro, pacote grande">
+    </label>
+
+    <div class="sheet-actions">
+      <button type="button" id="f-delete" class="btn danger-ghost">
+        <svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Excluir</button>
+      <span class="spacer"></span>
+      <button type="submit" class="btn primary">Salvar</button>
+    </div>
+  </form>
+
+  <div id="toast" class="toast" role="status" hidden>
+    <span id="toast-msg"></span>
+    <button id="toast-undo" type="button" hidden>Desfazer</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
