@@ -264,7 +264,7 @@ def pots_planned(slots) -> set:
 def cooking_schedule(tasks: list) -> dict:
     """Roteiro do dia de cozinha: começa pelo que demora sem precisar de atenção.
 
-    tasks: [{"name", "active", "total", "equipment"}] em minutos. A cozinheira faz uma coisa
+    tasks: [{"name", "active", "total", "equipment"}] em minutos. Quem cozinha faz uma coisa
     ativa por vez; cada equipamento tem uma capacidade (uma panela de pressão, forno para 2…).
     """
     cook_free = 0

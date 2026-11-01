@@ -18,7 +18,7 @@ const TYPES = {
   snack: { icon: "cookie", label: "Lanches da tarde" },
 };
 const PREP_LABEL = { nenhum: "Só separar", montar: "Sem fogão", cozinhar: "" };
-const VIEW_TITLE = { dishes: "Lar Doce Lar", stock: "Cozinha", home: "Casa", list: "Compras" };
+const VIEW_TITLE = { dishes: "Home Sweet Home", stock: "Cozinha", home: "Casa", list: "Compras" };
 
 const state = {
   items: [],

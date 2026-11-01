@@ -27,7 +27,7 @@ Todo ingrediente usado em panelas e pratos **precisa** estar no catálogo.
   "rende": 6, "dura": 4, "congela": true,
   "tempo_ativo": 20, "tempo_total": 60, "equipamento": "pressão", "dificuldade": "fácil",
   "kcal": 320, "proteina_g": 30,
-  "dica": "opcional: aparece para a cozinheira",
+  "dica": "opcional: aparece para quem cozinha",
   "ingredientes": [{ "item": "Carne bovina", "qtd": "1,2 kg" }, "Cebola", "Alho"] }
 ```
 

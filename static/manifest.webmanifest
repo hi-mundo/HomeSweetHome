@@ -1,10 +1,10 @@
 {
-  "name": "Lar Doce Lar",
-  "short_name": "Lar Doce Lar",
+  "name": "Home Sweet Home",
+  "short_name": "Home Sweet Home",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f6f3ee",
-  "theme_color": "#2f6b4f",
+  "background_color": "#f4f4f1",
+  "theme_color": "#1f6f4a",
   "lang": "pt-BR",
   "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }

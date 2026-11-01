@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lar Doce Lar: estoque genérico, pratos, plano da semana e lista de compras da casa.
+"""Home Sweet Home: estoque genérico, pratos, plano da semana e lista de compras da casa.
 
 Servidor sem dependências (stdlib + SQLite). Rode com:
     python3 server.py            # porta 8080
@@ -84,7 +84,7 @@ def init_db() -> None:
             )"""
         )
         if conn.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 0:
-            # Primeira vez: todo o catálogo entra como "tem"; a cozinheira ajusta o que falta.
+            # Primeira vez: todo o catálogo entra como "tem"; quem cozinha ajusta o que falta.
             now = time.time()
             conn.executemany(
                 "INSERT INTO items (name, name_key, category, custom, updated_at) VALUES (?, ?, ?, 0, ?)",
@@ -285,7 +285,7 @@ class Handler(SimpleHTTPRequestHandler):
                     return self.send_json({"item": row(item), "existed": True})
                 fields = {"name": name, "level": "ok", "category": "Outros", **data}
                 changes = apply_changes({}, fields)
-                changes["custom"] = 1  # criado pela cozinheira: pode ser excluído
+                changes["custom"] = 1  # criado por quem usa: pode ser excluído
                 changes["updated_at"] = time.time()
                 cols = ", ".join(changes)
                 cur = conn.execute(
@@ -395,7 +395,7 @@ class Handler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     init_db()
     server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
-    print(f"Lar Doce Lar rodando em http://0.0.0.0:{PORT}  (banco: {DB_PATH})", flush=True)
+    print(f"Home Sweet Home rodando em http://0.0.0.0:{PORT}  (banco: {DB_PATH})", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

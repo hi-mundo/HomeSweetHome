@@ -1,88 +1,106 @@
-# Lar Doce Lar
+# Home Sweet Home 🏡
 
-App para quem cozinha em casa, pensado para ficar aberto num iPad (funciona também no celular e
-no computador, com o conteúdo centralizado e 2 colunas em telas largas): **planejar a comida da semana** com o que tem,
-ver **quais pratos dá pra fazer**, marcar o **estoque** por nomes genéricos ("Arroz", "Leite",
-não a marca) e montar a **lista de compras**.
+**English** · [Português](README.pt-BR.md)
 
-## Rodar
+An open-source, self-hosted kitchen and household assistant. Keep track of what you have at
+home, plan a week of home-cooked meals from it, and turn what's missing into a shopping list.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-1f6f4a.svg)](LICENSE)
+![Python 3](https://img.shields.io/badge/python-3-1f6f4a.svg)
+![No dependencies](https://img.shields.io/badge/dependencies-none-1f6f4a.svg)
+
+![Home screen](docs/screenshot.jpg)
+
+Built to stay open on a tablet in the kitchen. It also works on phones and desktops, and can
+be installed as an app from the browser. The interface and the bundled recipes are in
+Brazilian Portuguese (home-style Brazilian food).
+
+> Vibe-coded as a personal project, shared so anyone can run it, adapt it and add their own
+> recipes.
+
+## Features
+
+- **Pantry and home supplies.** Track items by generic name ("Rice", "Milk", not the brand)
+  with three states: *have*, *running low*, *out*. Food, cleaning, tools and toiletries.
+- **What can I cook?** See which dishes you can make with what's at home.
+- **Weekly meal plan.** Pick how many days and desserts; the planner picks dishes, spreads them
+  across lunch, dinner, dessert and snack, and writes a cooking-day schedule with times.
+- **Shopping list.** One list grouped by category. Share it (WhatsApp or any app) and tap
+  *Bought* to put everything back in stock.
+- **Weekly alert.** Tells you what's missing to have a full week of food.
+- **Variety.** No main dish or dessert repeats within a month.
+
+## Quick start
+
+Requires only Python 3 (SQLite is built in).
 
 ```bash
-python3 server.py          # http://<ip-desta-máquina>:8080
+git clone https://github.com/hi-mundo/HomeSweetHome.git
+cd HomeSweetHome
+python3 server.py
+```
+
+Open `http://localhost:8080`. From a phone or tablet on the same Wi-Fi, open
+`http://<this-computer-ip>:8080` and use **Add to Home Screen** to install it.
+
+| Setting | Default |
+|---|---|
+| `PORT` | `8080` |
+| `LAR_DB` | `data/lar.db` (created on first run with common items) |
+
+```bash
 PORT=9000 python3 server.py
 ```
 
-Sem dependências (Python 3 + SQLite). No celular, abra `http://<ip>:8080` na mesma rede
-Wi-Fi e use "Adicionar à tela inicial" para virar um ícone de app.
+## Add your own dishes
 
-- Banco: `data/lar.db` (criado com itens comuns na primeira vez).
-- Catálogo de itens, panelas e pratos (com metadados de validade, tempo, calorias…): pasta `pratos/` — formato em `pratos/LEIA-ME.md`.
-- Testes do planejador: `python3 -m unittest test_cardapio.py`.
+Everything the app knows about food lives in plain JSON in [`pratos/`](pratos/): the item
+catalog, the base preparations ("pots") and the dishes built from them. The app reloads the
+folder by itself, no restart needed, and shows format errors on the home screen.
 
-## Como funciona para a cozinheira
+The format is documented in [`pratos/LEIA-ME.md`](pratos/LEIA-ME.md). Tip: new dishes that
+reuse existing pots make for less work on cooking day.
 
-A interface evita listas longas: cada tela mostra primeiro o que precisa de atenção e o
-resto fica a um toque, em blocos.
+## How the planner works
 
-| Aba | O que faz |
-|---|---|
-| 🏠 **Início** | Alerta se o estoque não dá para a semana (com **Pedir o que falta**). Card **Hoje**: almoço, sobremesa, lanche e janta do dia, e o que tirar do freezer para amanhã. Cardápio em 3 blocos: Refeições, Sobremesas, Lanches. |
-| 🧺 **Cozinha** | **Precisa de atenção** (o que está Pouco/Acabou) e, embaixo, blocos de categoria (🥬 Hortifruti · 16 itens) que abrem os cards com ícone e **Tem / Pouco / Acabou**. |
-| 🧽 **Casa** | O mesmo para limpeza, utensílios (vassoura, rodo…) e higiene (shampoo, sabonete…). |
-| 🛒 **Compras** | Uma lista só, por categoria; o que já está no carrinho desce para "No carrinho". **Enviar lista** manda pelo WhatsApp; **Comprei** devolve ao estoque. |
+The planner lives in [`cardapio.py`](cardapio.py), with tests in
+[`test_cardapio.py`](test_cardapio.py).
 
-**🗑 Remover itens** só exclui itens que vocês adicionaram. Os originais (que vêm com o app
-e os ingredientes dos pratos) não podem ser excluídos nem renomeados.
+<details>
+<summary>Details</summary>
 
-## Cozinhar pra semana
+1. **Pick dishes.** Pre-selects the ~18 most promising dishes and scores every combination
+   (lower is better): missing ingredients, number of different pots, diet gaps, repeated
+   protein (max 2 of the same kind in 5 days), hours of work, perishable dishes that don't
+   freeze, and repeats from the last month.
+2. **Spread across days.** Each dish becomes one lunch and one dinner on different days. What
+   spoils first goes first; meals that would expire go to the freezer, with a reminder to
+   thaw the day before.
+3. **Vegetables.** Dishes without one get a vegetable that is still fresh on that day.
+4. **Boost.** Meals under 550 kcal get a long-lasting extra (farofa or a boiled egg).
+5. **Desserts and snacks.** Up to 2 dessert types; one snack per day, perishables first.
+6. **Cooking-day schedule.** Starts with what cooks unattended (pressure cooker, oven),
+   respecting one pressure cooker and two oven trays.
+7. **Checklist.** Protein, carbs, varied proteins, vegetables in every dish, legumes, fruit
+   and "nothing expires".
 
-A cozinheira escolhe quantos **dias** (padrão 5) e quantos **tipos de sobremesa** (0 a 2).
-Tudo é preparado no dia 1. Cada dia tem **almoço, sobremesa, lanche da tarde e janta**.
-O algoritmo (`cardapio.py`, testes em `test_cardapio.py`):
+</details>
 
-1. **Escolhe os pratos** — pré-seleciona os ~18 mais promissores e testa todas as combinações
-   entre eles, pontuando (menor é melhor): ingredientes que faltam, panelas diferentes, falhas de
-   dieta, **proteína repetida** (no máx. 2 do mesmo tipo em 5 dias), **horas de trabalho**,
-   panelas de dificuldade média, marmitas leves, pratos perecíveis que não congelam e
-   **repetição no último mês**. Nenhuma panela vai em mais de ~metade dos pratos.
-2. **Distribui nos dias** — testa todas as ordens: cada prato vira um almoço e uma janta em
-   dias diferentes, nunca a janta de hoje e o almoço de amanhã; o que estraga antes vai para o
-   começo; marmita que passaria da validade vai **para o freezer** (com lembrete de
-   descongelar na véspera).
-3. **Verduras** — prato sem verdura ganha uma, escolhida por refeição e só se ainda estiver na
-   validade naquele dia. Frescas primeiro; legumes congelados só para o fim da semana.
-4. **Reforço** — marmita abaixo de 550 kcal ganha um extra que dura (farofa ou ovo cozido).
-5. **Sobremesas** — no máximo 2 tipos, receita inteira; o par ideal é uma caseira no começo da
-   semana + uma que dura no fim.
-6. **Lanches** — 1 por dia, preferindo só separar no potinho; os perecíveis no começo.
-7. **Roteiro do dia de cozinha** — começa pelo que demora sozinho (pressão, forno), respeitando
-   uma panela de pressão e o forno para 2 assadeiras; mostra o horário de cada etapa e o tempo
-   total.
-8. **Checklist** — proteína, carboidrato, marmitas caprichadas, proteínas variadas, verdura em
-   todo prato, leguminosa, frutas e "nada passa da validade".
+## Run the tests
 
-O plano tem 3 abas: **Semana** (resumo e um dia por vez, com kcal), **Cozinhar** (roteiro com
-horários, panelas com porções, receitas, validade e a partir de que dia congelar; sobremesas;
-lanches) e **Conferir** (o que falta comprar, avisos de validade e dieta).
+```bash
+python3 -m unittest test_cardapio.py
+```
 
-## Variedade
+## Security
 
-O cardápio tem **53 refeições, 18 sobremesas e 20 lanches** sobre 43 panelas — comida de casa, brasileira e simples. Com o
-histórico de planos salvos, o app garante (e os testes conferem, simulando 4 semanas):
+There is no login: anyone on your network can open the app. Run it on your home network
+only and **do not expose the port to the internet**.
 
-- nenhuma **refeição** repetida no mês (20 por mês com 5 dias/semana; 28 com 7);
-- nenhuma **sobremesa** repetida no mês;
-- nenhum **lanche** repetido de uma semana para a outra.
+## Contributing
 
-Para mais variedade, basta adicionar pratos em `pratos/` — de preferência combinando panelas
-que já existem (cada panela nova em 2–3 pratos é o que deixa a semana com menos trabalho).
+Recipes, translations and fixes are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Alerta da semana
+## License
 
-Sem plano salvo, o app calcula o melhor plano possível e mostra o que falta para ele — é o
-mínimo a comprar para ter uma semana de comida. Com um plano em andamento, confere o que esse
-plano precisa.
-
-## Observação
-
-Não tem senha: qualquer um na rede de casa consegue abrir. Não exponha a porta para a internet.
+[MIT](LICENSE)
