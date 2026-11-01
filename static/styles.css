@@ -216,9 +216,10 @@ button:disabled { cursor: default; }
   background: var(--surface); box-shadow: var(--shadow-1), inset 0 0 0 1px var(--hairline);
 }
 button.kpi:active { transform: scale(.98); }
-.kpi b { display: flex; align-items: baseline; min-height: 34px; font-size: 1.9rem; font-weight: 750; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.kpi b small { font-size: 1rem; font-weight: 600; color: var(--text-3); }
-.kpi span { color: var(--text-2); font-size: .84rem; line-height: 1.25; }
+.kpi b { display: flex; align-items: baseline; min-height: 28px; font-size: 1.45rem; font-weight: 750; line-height: 1.15; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.kpi b small { font-size: .9rem; font-weight: 600; color: var(--text-3); }
+.kpi b .ic.lg { width: 22px; height: 22px; }
+.kpi span { color: var(--text); font-size: .95rem; font-weight: 600; line-height: 1.25; }
 .kpi.ok b { color: var(--ok); }
 .kpi.out b { color: var(--out); }
 .kpi.low b { color: var(--low); }

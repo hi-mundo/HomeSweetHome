@@ -34,12 +34,17 @@ com o app são comida de casa, brasileira e simples.
 
 ## Como usar
 
+Deixe aberto num tablet na bancada: dá para conferir o dia, marcar o que acabou e montar a
+lista sem sair da cozinha.
+
+![Home Sweet Home num iPad na bancada da cozinha](docs/kitchen-ipad.jpg)
+
 | Aba | O que faz |
 |---|---|
-| 🏠 **Início** | Alerta da semana, card **Hoje** (almoço, sobremesa, lanche, janta e o que tirar do freezer) e o cardápio. |
-| 🧺 **Cozinha** | O que precisa de atenção primeiro; o resto em blocos por categoria. |
+| 🏠 **Início** | Números do dia (pratos possíveis, semana garantida, itens para comprar, o que acabou), alerta da semana, card **Hoje** (almoço, sobremesa, lanche, janta e o que tirar do freezer) e o cardápio. |
+| 🧺 **Cozinha** | Chips **acabou · pouco · na lista** que filtram a grade; categorias em blocos. Um toque no item passa de *Tem* para *Pouco* e para *Acabou*; o lápis edita. |
 | 🧽 **Casa** | O mesmo para limpeza, utensílios e higiene. |
-| 🛒 **Compras** | A lista de compras. |
+| 🛒 **Compras** | A lista de compras e **Comprados recentemente**, para pôr de volta com um toque. |
 
 **Remover itens** só exclui itens que você adicionou. Os que vêm com o app não podem ser
 excluídos nem renomeados.

@@ -30,6 +30,20 @@ Brazilian Portuguese (home-style Brazilian food).
 - **Weekly alert.** Tells you what's missing to have a full week of food.
 - **Variety.** No main dish or dessert repeats within a month.
 
+## Usage
+
+Leave it open on a tablet on the counter: check today's meals, mark what ran out and build the
+list without leaving the kitchen.
+
+![Home Sweet Home on an iPad on the kitchen counter](docs/kitchen-ipad.jpg)
+
+| Tab | What it does |
+|---|---|
+| 🏠 **Início** (Home) | Key numbers (dishes you can make, week covered, items to buy, items out), weekly alert, **Today** card and the menu. |
+| 🧺 **Cozinha** (Kitchen) | Status chips (*out · low · on the list*) that filter the grid; categories as blocks. Tap an item to go *have* → *low* → *out*; the pencil edits it. |
+| 🧽 **Casa** (Home supplies) | Same for cleaning, tools and toiletries. |
+| 🛒 **Compras** (Shopping) | The shopping list plus **Recently bought**, one tap to add back. |
+
 ## Quick start
 
 Requires only Python 3 (SQLite is built in).
