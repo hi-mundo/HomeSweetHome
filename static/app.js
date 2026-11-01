@@ -53,6 +53,8 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const isStockView = () => state.view === "stock" || state.view === "home";
 const icon = (name, cls = "") => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const kcal = (n) => `${Math.round(n).toLocaleString("pt-BR")} kcal`;
+// "53 dá pra fazer"; sem nenhum, avisa em vez de mostrar zero.
+const canMake = (n) => n ? `${n} dá pra fazer` : "Falta ingrediente";
 // 75 -> "1h15"; 40 -> "40 min"
 const duration = (min) => min >= 60 ? `${Math.floor(min / 60)}h${String(min % 60).padStart(2, "0")}` : `${min} min`;
 const clock = (min) => `${Math.floor(min / 60)}:${String(min % 60).padStart(2, "0")}`;
@@ -245,7 +247,7 @@ function renderStats() {
       <b>${value}</b><span>${label}</span></${tag}>`;
   };
   $("#kpis").innerHTML = [
-    stat("", `${can}<small>/${state.dishes.length}</small>`, "pratos dá pra fazer"),
+    stat("", can, "pratos dá pra fazer"),
     !ws ? stat("", "…", "conferindo a semana")
       : ws.ok ? stat("ok", icon("check", "lg"), "semana garantida")
       : stat("out", ws.missing.length, `${ws.missing.length === 1 ? "falta" : "faltam"} para ${plural(ws.days, "dia", "dias")}`),
@@ -370,7 +372,7 @@ function renderDishes() {
         const can = list.filter((x) => !x.st.missing.length).length;
         return `<button class="tile-cat" data-type="${type}" type="button">
           <span class="tile-ic">${icon(t.icon)}</span><strong>${t.label}</strong>
-          <small>${can} de ${list.length} dá pra fazer</small></button>`;
+          <small>${canMake(can)}</small></button>`;
       }).join("")}</div>`;
   } else {
     const shown = all
@@ -379,7 +381,7 @@ function renderDishes() {
     if (!q) {
       const can = shown.filter((x) => !x.st.missing.length).length;
       html += `<div class="back-row"><button data-action="types" type="button">${icon("left", "sm")}Cardápio</button></div>
-        <div class="section-head" style="margin-top:4px"><h2>${TYPES[state.dishType].label}</h2><small>${can} de ${shown.length} dá pra fazer</small></div>`;
+        <div class="section-head" style="margin-top:4px"><h2>${TYPES[state.dishType].label}</h2><small>${canMake(can)}</small></div>`;
     }
     html += shown.map(dishCardHTML).join("") || `<p class="empty">Nenhum prato encontrado.</p>`;
   }
