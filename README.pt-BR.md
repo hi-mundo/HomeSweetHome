@@ -67,6 +67,9 @@ Abra `http://localhost:8080`. No celular ou tablet, na mesma rede Wi-Fi, abra
 | `PORT` | `8080` |
 | `LAR_DB` | `data/lar.db` (criado na primeira vez com itens comuns) |
 
+Para deixar rodando sempre (Raspberry Pi, servidor em casa) com systemd ou nginx, veja
+[DEPLOY.pt-BR.md](DEPLOY.pt-BR.md).
+
 ## Seus próprios pratos
 
 Tudo o que o app sabe sobre comida fica em JSON na pasta [`pratos/`](pratos/): catálogo de

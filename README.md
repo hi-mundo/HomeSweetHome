@@ -66,6 +66,9 @@ Open `http://localhost:8080`. From a phone or tablet on the same Wi-Fi, open
 PORT=9000 python3 server.py
 ```
 
+To keep it running (Raspberry Pi, home server) with systemd or nginx, see
+[DEPLOY.md](DEPLOY.md).
+
 ## Add your own dishes
 
 Everything the app knows about food lives in plain JSON in [`pratos/`](pratos/): the item
