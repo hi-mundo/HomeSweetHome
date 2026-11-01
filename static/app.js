@@ -29,6 +29,7 @@ const state = {
   dishType: null,      // null = blocos do cardápio; "meal" | "dessert" | "snack" = lista do tipo
   openDish: null,
   stockCat: null,      // null = blocos de categoria; nome = itens da categoria
+  stockFilter: null,   // chip ativo: "out" | "low" | "list" | null
   editStock: false,
   weekStatus: null,
   todayDay: null,      // dia escolhido no card "Hoje" (null = dia de hoje)
@@ -226,6 +227,31 @@ function renderAlerts() {
   $("#week-alert").innerHTML = html;
   // Na Cozinha o alerta também aparece; na Casa não faz sentido.
   $("#stock-alert").innerHTML = state.view === "stock" ? html : "";
+  renderStats();
+}
+
+// ---------- Início: números grandes (pratos, semana, lista, acabando)
+
+function renderStats() {
+  if (!state.items.length) return;
+  const ws = state.weekStatus;
+  const can = state.dishes.filter((d) => !dishStatus(d).missing.length).length;
+  const toBuy = state.items.filter((i) => i.on_list && !i.in_cart).length;
+  const out = state.items.filter((i) => i.level === "out").length;
+  const low = state.items.filter((i) => i.level === "low").length;
+  const stat = (tone, value, label, action = "") => {
+    const tag = action ? "button" : "div";
+    return `<${tag} class="kpi ${tone}" ${action ? `data-action="${action}" type="button"` : ""}>
+      <b>${value}</b><span>${label}</span></${tag}>`;
+  };
+  $("#kpis").innerHTML = [
+    stat("", `${can}<small>/${state.dishes.length}</small>`, "pratos dá pra fazer"),
+    !ws ? stat("", "…", "conferindo a semana")
+      : ws.ok ? stat("ok", icon("check", "lg"), "semana garantida")
+      : stat("out", ws.missing.length, `${ws.missing.length === 1 ? "falta" : "faltam"} para ${plural(ws.days, "dia", "dias")}`),
+    stat(toBuy ? "accent" : "", toBuy, toBuy === 1 ? "item para comprar" : "itens para comprar", "go-list"),
+    stat(out ? "out" : low ? "low" : "", out, low ? `acabou · ${low} pouco` : "acabou", "go-out"),
+  ].join("");
 }
 
 function requestWeekMissing() {
@@ -302,7 +328,7 @@ function renderWeekCard() {
   const fresh = p && Date.now() / 1000 - p.saved_at < (p.days.length + 2) * 86400;
   if (!fresh) {
     $("#week-card").innerHTML = `<button class="hero" data-action="new-plan" type="button">
-        <span class="hero-ic">${icon("pot", "lg")}</span>
+        <span class="hero-art">${icon("pot")}</span>
         <h2>Cozinhar pra semana</h2>
         <p>Almoço, sobremesa, lanche e janta de cada dia — com o que tem em casa e sem repetir prato no mês.</p>
         <span class="cta">Montar plano ${icon("right", "sm")}</span>
@@ -328,6 +354,7 @@ function renderWeekCard() {
 function renderDishes() {
   if (!state.dishes.length && !state.dishErrors.length && !state.items.length) return; // ainda carregando
   renderWeekCard();
+  renderStats();
   const q = key($("#dish-search").value);
   $("#dish-search-clear").hidden = !q;
   const all = state.dishes.map((d) => ({ dish: d, st: dishStatus(d) }));
@@ -374,7 +401,8 @@ function dishCardHTML({ dish, st }) {
   ].join("");
   return `<article class="card dish ${ok ? "" : "cannot"} ${open ? "open" : ""}" data-dish="${esc(dish.id)}">
     <button class="dish-head" data-action="toggle" aria-expanded="${open}">
-      <span class="thumb" aria-hidden="true">${esc(dish.emoji)}</span>
+      <span class="thumb" aria-hidden="true">${dish.photo
+        ? `<img src="fotos/${encodeURIComponent(dish.photo)}" alt="" loading="lazy">` : esc(dish.emoji)}</span>
       <span class="dish-info">
         <span class="title"><strong>${esc(dish.name)}</strong>${icon("right", "chev sm")}</span>
         ${dish.type === "meal" ? `<span class="sub">${esc(dish.preparos.join(" + "))}</span>` : ""}
@@ -405,24 +433,37 @@ function requestMissing(dish) {
     `${plural(missing.length, "item pedido", "itens pedidos")} para ${dish.name}`);
 }
 
-// ---------- Cozinha / Casa: "precisa de atenção" + blocos de categoria
+// ---------- Cozinha / Casa: chips de status + blocos de categoria
+
+const STOCK_FILTERS = {
+  out: { label: "acabou", test: (i) => i.level === "out" },
+  low: { label: "pouco", test: (i) => i.level === "low" },
+  list: { label: "na lista", test: (i) => i.on_list },
+};
+
+// Tile: um toque passa para o próximo estado (Tem → Pouco → Acabou → Tem); o lápis abre a edição.
+const NEXT_LEVEL = { ok: "low", low: "out", out: "ok" };
 
 function itemCardHTML(it) {
-  const action = state.editStock
-    ? (it.custom
-      ? `<button class="del" data-action="delete" aria-label="Excluir ${esc(it.name)}">${icon("trash", "sm")}Excluir</button>`
-      : `<span class="original">Item original</span>`)
-    : `<div class="seg" role="group" aria-label="Quanto tem de ${esc(it.name)}">
-        ${["ok", "low", "out"].map((l) =>
-          `<button data-action="level" data-level="${l}" aria-pressed="${it.level === l}">${LEVEL_LABEL[l]}</button>`).join("")}
-      </div>`;
+  const sub = it.note && it.on_list ? `<small>${esc(it.note)}</small>` : it.unit ? `<small>${esc(it.unit)}</small>` : "";
+  const body = `<span class="emoji" aria-hidden="true">${itemIcon(it)}</span>
+    <span class="iname">${esc(it.name)}${sub}</span>`;
+  if (state.editStock) {
+    return `<div class="item editing" data-id="${it.id}">
+      <button class="item-tap" data-action="edit">${body}</button>
+      ${it.custom
+        ? `<button class="del" data-action="delete" aria-label="Excluir ${esc(it.name)}">${icon("trash", "sm")}Excluir</button>`
+        : `<span class="original">Item original</span>`}
+    </div>`;
+  }
   return `<div class="item ${it.level}" data-id="${it.id}">
     ${it.on_list ? `<span class="onlist" title="Na lista de compras">${icon("cart")}</span>` : ""}
-    <button class="item-top" data-action="edit">
-      <span class="emoji" aria-hidden="true">${itemIcon(it)}</span>
-      <span class="iname">${esc(it.name)}${it.note && it.on_list ? `<small>${esc(it.note)}</small>` : it.unit ? `<small>${esc(it.unit)}</small>` : ""}</span>
+    <button class="item-tap" data-action="cycle"
+      aria-label="${esc(it.name)}: ${LEVEL_LABEL[it.level]}. Toque para marcar ${LEVEL_LABEL[NEXT_LEVEL[it.level]]}">
+      ${body}
+      <span class="lvl ${it.level}"><i></i>${LEVEL_LABEL[it.level]}</span>
     </button>
-    ${action}
+    <button class="item-edit" data-action="edit" aria-label="Editar ${esc(it.name)}">${icon("edit", "sm")}</button>
   </div>`;
 }
 
@@ -450,12 +491,18 @@ function renderStock() {
       <div class="section-head" style="margin-top:4px"><h2>${esc(state.stockCat)}</h2><small>${plural(list.length, "item", "itens")}</small></div>
       <div class="grid">${list.map(itemCardHTML).join("")}</div>`;
   } else {
-    // Primeiro o que precisa de atenção; o resto fica dentro das categorias.
-    const attention = inScope.filter((i) => i.level !== "ok")
-      .sort((a, b) => (b.level === "out") - (a.level === "out") || byName(a, b));
-    if (attention.length) {
-      html += `<div class="section-head" style="margin-top:8px"><h2>Precisa de atenção</h2><small>${plural(attention.length, "item", "itens")}</small></div>
-        <div class="grid">${attention.map(itemCardHTML).join("")}</div>`;
+    // Chips de status no topo: um toque filtra, outro toque volta às categorias.
+    const counts = Object.fromEntries(Object.entries(STOCK_FILTERS).map(([f, x]) => [f, inScope.filter(x.test).length]));
+    if (state.stockFilter && !counts[state.stockFilter]) state.stockFilter = null;
+    const chips = Object.entries(STOCK_FILTERS).filter(([f]) => counts[f]).map(([f, x]) =>
+      `<button type="button" class="status-chip ${f}" data-filter="${f}" aria-pressed="${state.stockFilter === f}">
+        <b>${counts[f]}</b>${x.label}</button>`).join("");
+    html += chips ? `<div class="status-chips" role="group" aria-label="Filtrar por situação">${chips}</div>` : "";
+    if (state.stockFilter) {
+      const list = inScope.filter(STOCK_FILTERS[state.stockFilter].test).sort(byName);
+      html += `<div class="grid">${list.map(itemCardHTML).join("")}</div>`;
+      $("#stock-list").innerHTML = html;
+      return;
     }
     html += `<div class="section-head"><h2>Categorias</h2><small>${plural(inScope.length, "item", "itens")}</small></div><div class="tiles">`;
     for (const [cat, list] of grouped(inScope)) {
@@ -530,6 +577,18 @@ function renderList() {
   finish.disabled = !inCart.length;
   finish.innerHTML = inCart.length ? `${icon("check")}Comprei (${inCart.length})` : "Comprei";
   renderSuggest();
+  renderRecent();
+}
+
+// Comprados recentemente: um toque põe de volta na lista.
+function renderRecent() {
+  const recent = state.items
+    .filter((i) => i.last_bought_at && !i.on_list)
+    .sort((a, b) => b.last_bought_at - a.last_bought_at)
+    .slice(0, 8);
+  $("#list-recent").innerHTML = recent.length ? `<div class="section-head"><h2>Comprados recentemente</h2><small>Toque para pôr na lista</small></div>
+    <div class="recent">${recent.map((it) => `<button type="button" class="recent-tile" data-id="${it.id}">
+      <span class="emoji" aria-hidden="true">${itemIcon(it)}</span><span>${esc(it.name)}</span></button>`).join("")}</div>` : "";
 }
 
 function renderSuggest() {
@@ -751,11 +810,12 @@ function requestPlanMissing() {
 
 // ---------------------------------------------------------------- Ações
 
-function setView(view) {
+function setView(view, { filter = null } = {}) {
   transition(() => {
     if (state.view !== view) {
       $("#stock-search").value = "";
       state.stockCat = null;
+      state.stockFilter = filter;
     }
     state.view = view;
     if (!isStockView() && state.editStock) setEditStock(false);
@@ -914,6 +974,14 @@ $("#week-card").addEventListener("click", (e) => {
   const btn = e.target.closest("[data-action]");
   if (btn) openPlan(btn.dataset.action === "see-plan" ? "saved" : "new");
 });
+$("#kpis").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-action]");
+  if (btn && btn.dataset.action === "go-list") setView("list");
+  if (btn && btn.dataset.action === "go-out") {
+    const kitchen = state.items.some((i) => i.level === "out" && !isHome(i));
+    setView(kitchen ? "stock" : "home", { filter: "out" });
+  }
+});
 $("#dish-search").addEventListener("input", renderDishes);
 $("#dish-search-clear").addEventListener("click", () => {
   $("#dish-search").value = "";
@@ -980,13 +1048,19 @@ $("#stock-search-clear").addEventListener("click", () => {
 $("#stock-list").addEventListener("click", (e) => {
   const cat = e.target.closest("[data-cat]");
   if (cat) { transition(() => { state.stockCat = cat.dataset.cat; window.scrollTo(0, 0); renderStock(); }); return; }
+  const chip = e.target.closest("[data-filter]");
+  if (chip) {
+    const f = chip.dataset.filter;
+    transition(() => { state.stockFilter = state.stockFilter === f ? null : f; renderStock(); });
+    return;
+  }
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
   const a = btn.dataset.action;
   if (a === "cats") { transition(() => { state.stockCat = null; renderStock(); }); return; }
   if (a === "add-new") return openSheet({ name: $("#stock-search").value.trim() });
   const item = byId(Number(btn.closest("[data-id]").dataset.id));
-  if (a === "level") setLevel(item, btn.dataset.level);
+  if (a === "cycle") setLevel(item, NEXT_LEVEL[item.level]);
   if (a === "edit") openSheet({ item });
   if (a === "delete") deleteItem(item);
 });
@@ -999,6 +1073,10 @@ $("#shop-list").addEventListener("click", (e) => {
   if (btn.dataset.action === "cart") patch(item, { in_cart: !item.in_cart });
   if (btn.dataset.action === "edit") openSheet({ item });
   if (btn.dataset.action === "unlist") patch(item, { on_list: false }, { toastMsg: `${item.name} saiu da lista` });
+});
+$("#list-recent").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-id]");
+  if (btn) addToList(byId(Number(btn.dataset.id)));
 });
 $("#list-add").addEventListener("input", renderSuggest);
 $("#list-add").addEventListener("keydown", (e) => {

@@ -63,6 +63,9 @@ Todo ingrediente usado em panelas e pratos **precisa** estar no catálogo.
 - **dura** / **congela** (opcional): sobrescrevem o que vem das panelas. `dura: 0` = só fazendo
   na hora (nunca entra no plano da semana).
 - **opcionais**: não impedem o prato; aparecem como "se tiver".
+- **foto** (opcional): nome de um arquivo em `pratos/fotos/` (`.jpg`, `.png` ou `.webp`; só
+  letras sem acento, números, `-`, `_` e `.`). Ex.: `"foto": "carne-com-cuscuz.jpg"`. Sem foto,
+  o app mostra o `emoji`.
 
 Ingredientes usam o nome do catálogo (acentos/maiúsculas não importam). Objeto
 `{ "item": "...", "qtd": "..." }` também vale; a `qtd` vai como observação na lista de compras.

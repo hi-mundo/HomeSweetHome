@@ -23,6 +23,9 @@ PREPS = ("nenhum", "montar", "cozinhar")
 EQUIPMENT = ("nenhum", "fogão", "forno", "pressão", "liquidificador", "micro-ondas")
 DEFAULT_EMOJI = {"meal": "🍽️", "snack": "🥪", "dessert": "🍮"}
 PREPAROS_FILE = "preparos.json"
+# Foto opcional do prato: arquivo dentro de pratos/fotos/, nome simples (sem pasta nem acento).
+PHOTOS_DIR = "fotos"
+PHOTO_RE = re.compile(r"[\w.-]+\.(?:jpe?g|png|webp)", re.ASCII | re.IGNORECASE)
 INGREDIENTS_FILE = "ingredientes.json"
 HOUSE_FILE = "itens-da-casa.json"
 CATALOG_FILES = (INGREDIENTS_FILE, HOUSE_FILE)
@@ -210,6 +213,9 @@ def load(folder: Path, categories) -> dict:
                     [p["life"] for p in used] + [life_of(extras, whole=prep == "nenhum")])
                 freeze = bool(d.get("congela", bool(used) and all(p["freeze"] for p in used)))
                 protein_types = [p["protein_type"] for p in used if p["protein_type"]]
+                photo = str(d.get("foto", "")).strip()
+                if photo and not (PHOTO_RE.fullmatch(photo) and (path.parent / PHOTOS_DIR / photo).is_file()):
+                    raise ValueError(f"foto “{photo}” não existe em {PHOTOS_DIR}/ (use .jpg, .png ou .webp)")
             except (KeyError, TypeError, ValueError, AttributeError) as e:
                 errors.append(f"{path.name} (prato {i + 1}): {e}")
                 continue
@@ -222,6 +228,7 @@ def load(folder: Path, categories) -> dict:
                 "freeze": freeze,
                 "serves": max(1, int(d.get("rende", 6 if kind == "dessert" else 1))),
                 "emoji": str(d.get("emoji", "") or DEFAULT_EMOJI[kind]),
+                "photo": photo or None,
                 "preparos": [p["name"] for p in used],
                 "groups": sorted({p["group"] for p in used if p["group"]}),
                 # Metadados: o prato herda das panelas, a menos que declare os seus.

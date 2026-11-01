@@ -263,7 +263,24 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path == "/api/week-status":
             with db() as conn:
                 return self.send_json(week_status(conn))
+        m = re.fullmatch(r"/fotos/([^/?]+)", self.path)
+        if m:
+            return self.send_photo(m.group(1))
         return super().do_GET()
+
+    def send_photo(self, name: str):
+        """Foto de prato (pratos/fotos/). Só nomes simples: nada de subir de pasta."""
+        path = DISHES_DIR / cardapio.PHOTOS_DIR / name
+        if not cardapio.PHOTO_RE.fullmatch(name) or not path.is_file():
+            return self.send_error(404)
+        body = path.read_bytes()
+        ext = path.suffix.lower()
+        self.send_response(200)
+        self.send_header("Content-Type", {".png": "image/png", ".webp": "image/webp"}.get(ext, "image/jpeg"))
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "max-age=86400")
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_POST(self):
         try:
