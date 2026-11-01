@@ -54,10 +54,30 @@ Open `http://<pi-ip>:424` (find the IP with `hostname -I`).
 | Logs (live) | `journalctl -u homesweethome -f` |
 | Restart | `sudo systemctl restart homesweethome` |
 | Stop / disable | `sudo systemctl disable --now homesweethome` |
-| Update | `cd ~/HomeSweetHome && git pull && sudo systemctl restart homesweethome` |
+| Update | `cd ~/HomeSweetHome && ./deploy/update.sh` (see below) |
 | Backup | `sqlite3 ~/HomeSweetHome/data/lar.db ".backup lar-$(date +%F).db"` (or copy the file while stopped) |
 
 Dish files in `pratos/` are reloaded automatically; no restart needed after editing them.
+
+### Updating
+
+[`deploy/update.sh`](deploy/update.sh) does the whole update safely:
+
+1. Exits without touching anything if you are already on the latest version.
+2. Backs up the database to `data/backups/lar-YYYY-MM-DD-HHMMSS.db` (consistent copy while the
+   app runs; keeps the last 10).
+3. `git pull --ff-only` (refuses if files were edited on the Pi).
+4. Runs the tests; if they fail, goes back to the previous commit and does not restart.
+5. Restarts the service (asks for your sudo password) and checks that the app answers.
+   If it does not, it rolls back both the code and the database.
+
+```bash
+cd ~/HomeSweetHome && ./deploy/update.sh
+KEEP=30 ./deploy/update.sh          # keep more backups
+```
+
+To restore a backup by hand: `sudo systemctl stop homesweethome`, copy the file over
+`data/lar.db`, then `sudo systemctl start homesweethome`.
 
 ## 3. nginx in front (optional)
 

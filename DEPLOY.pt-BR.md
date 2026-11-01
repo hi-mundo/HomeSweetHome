@@ -54,10 +54,30 @@ mude `Environment=PORT=` em `/etc/systemd/system/homesweethome.service` e rode
 | Logs (ao vivo) | `journalctl -u homesweethome -f` |
 | Reiniciar | `sudo systemctl restart homesweethome` |
 | Parar / desativar | `sudo systemctl disable --now homesweethome` |
-| Atualizar | `cd ~/HomeSweetHome && git pull && sudo systemctl restart homesweethome` |
+| Atualizar | `cd ~/HomeSweetHome && ./deploy/update.sh` (abaixo) |
 | Backup | `sqlite3 ~/HomeSweetHome/data/lar.db ".backup lar-$(date +%F).db"` (ou copie o arquivo com o serviço parado) |
 
 Os pratos em `pratos/` são relidos sozinhos; não precisa reiniciar depois de editar.
+
+### Atualizar
+
+O [`deploy/update.sh`](deploy/update.sh) faz a atualização inteira com segurança:
+
+1. Sai sem mexer em nada se já está na última versão.
+2. Faz backup do banco em `data/backups/lar-AAAA-MM-DD-HHMMSS.db` (cópia consistente com o app
+   rodando; mantém os últimos 10).
+3. `git pull --ff-only` (recusa se alguém editou arquivos no Pi).
+4. Roda os testes; se falharem, volta ao commit anterior e não reinicia.
+5. Reinicia o serviço (pede a senha do sudo) e confere se o app responde. Se não responder,
+   volta o código e o banco.
+
+```bash
+cd ~/HomeSweetHome && ./deploy/update.sh
+KEEP=30 ./deploy/update.sh          # guardar mais backups
+```
+
+Para restaurar um backup à mão: `sudo systemctl stop homesweethome`, copie o arquivo por cima
+de `data/lar.db` e rode `sudo systemctl start homesweethome`.
 
 ## 3. nginx na frente (opcional)
 
